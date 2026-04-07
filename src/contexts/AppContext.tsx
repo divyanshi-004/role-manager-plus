@@ -142,10 +142,10 @@ const USERS_DATA: User[] = [
 ];
 
 const SAMPLE_ORDERS: Order[] = [
-  { id: 'ORD-001', items: [{ item: MENU_DATA[4], quantity: 2 }, { item: MENU_DATA[9], quantity: 4 }], total: 934, status: 'preparing', tableNumber: 3, createdAt: new Date(Date.now() - 1200000) },
-  { id: 'ORD-002', items: [{ item: MENU_DATA[0], quantity: 1 }, { item: MENU_DATA[13], quantity: 1 }], total: 578, status: 'placed', tableNumber: 7, createdAt: new Date(Date.now() - 600000) },
-  { id: 'ORD-003', items: [{ item: MENU_DATA[6], quantity: 1 }, { item: MENU_DATA[15], quantity: 2 }], total: 747, status: 'ready', tableNumber: 1, createdAt: new Date(Date.now() - 1800000) },
-  { id: 'ORD-004', items: [{ item: MENU_DATA[1], quantity: 2 }, { item: MENU_DATA[17], quantity: 2 }], total: 676, status: 'placed', tableNumber: 5, createdAt: new Date(Date.now() - 300000) },
+  { id: 'ORD-001', items: [{ item: MENU_DATA[5], quantity: 2 }, { item: MENU_DATA[18], quantity: 4 }], total: 834, status: 'preparing', tableNumber: 3, createdAt: new Date(Date.now() - 1200000) },
+  { id: 'ORD-002', items: [{ item: MENU_DATA[0], quantity: 1 }, { item: MENU_DATA[22], quantity: 1 }], total: 478, status: 'placed', tableNumber: 7, createdAt: new Date(Date.now() - 600000) },
+  { id: 'ORD-003', items: [{ item: MENU_DATA[7], quantity: 1 }, { item: MENU_DATA[24], quantity: 2 }], total: 517, status: 'ready', tableNumber: 1, createdAt: new Date(Date.now() - 1800000) },
+  { id: 'ORD-004', items: [{ item: MENU_DATA[1], quantity: 2 }, { item: MENU_DATA[26], quantity: 2 }], total: 636, status: 'placed', tableNumber: 5, createdAt: new Date(Date.now() - 300000) },
 ];
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
