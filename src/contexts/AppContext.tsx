@@ -115,21 +115,22 @@ const MENU_DATA: MenuItem[] = [
 ];
 
 const INVENTORY_DATA: InventoryItem[] = [
-  { id: 'i1', name: 'Chicken', stock: 8, unit: 'kg', minStock: 5, category: 'Protein' },
-  { id: 'i2', name: 'Paneer', stock: 3, unit: 'kg', minStock: 4, category: 'Protein' },
-  { id: 'i3', name: 'Mutton', stock: 2, unit: 'kg', minStock: 3, category: 'Protein' },
-  { id: 'i4', name: 'Basmati Rice', stock: 15, unit: 'kg', minStock: 10, category: 'Grains' },
-  { id: 'i5', name: 'Wheat Flour', stock: 12, unit: 'kg', minStock: 8, category: 'Grains' },
-  { id: 'i6', name: 'Tomatoes', stock: 4, unit: 'kg', minStock: 5, category: 'Vegetables' },
-  { id: 'i7', name: 'Onions', stock: 6, unit: 'kg', minStock: 8, category: 'Vegetables' },
-  { id: 'i8', name: 'Spinach', stock: 1, unit: 'kg', minStock: 3, category: 'Vegetables' },
+  { id: 'i1', name: 'Paneer', stock: 3, unit: 'kg', minStock: 4, category: 'Dairy' },
+  { id: 'i2', name: 'Basmati Rice', stock: 15, unit: 'kg', minStock: 10, category: 'Grains' },
+  { id: 'i3', name: 'Wheat Flour', stock: 12, unit: 'kg', minStock: 8, category: 'Grains' },
+  { id: 'i4', name: 'Tomatoes', stock: 4, unit: 'kg', minStock: 5, category: 'Vegetables' },
+  { id: 'i5', name: 'Onions', stock: 6, unit: 'kg', minStock: 8, category: 'Vegetables' },
+  { id: 'i6', name: 'Spinach', stock: 1, unit: 'kg', minStock: 3, category: 'Vegetables' },
+  { id: 'i7', name: 'Potatoes', stock: 10, unit: 'kg', minStock: 8, category: 'Vegetables' },
+  { id: 'i8', name: 'Cauliflower', stock: 3, unit: 'kg', minStock: 4, category: 'Vegetables' },
   { id: 'i9', name: 'Cream', stock: 3, unit: 'ltr', minStock: 4, category: 'Dairy' },
   { id: 'i10', name: 'Butter', stock: 2, unit: 'kg', minStock: 3, category: 'Dairy' },
   { id: 'i11', name: 'Yogurt', stock: 5, unit: 'ltr', minStock: 4, category: 'Dairy' },
-  { id: 'i12', name: 'Cooking Oil', stock: 8, unit: 'ltr', minStock: 5, category: 'Essentials' },
-  { id: 'i13', name: 'Garam Masala', stock: 1, unit: 'kg', minStock: 2, category: 'Spices' },
-  { id: 'i14', name: 'Red Chili Powder', stock: 2, unit: 'kg', minStock: 2, category: 'Spices' },
-  { id: 'i15', name: 'Fish', stock: 2, unit: 'kg', minStock: 3, category: 'Protein' },
+  { id: 'i12', name: 'Cashews', stock: 2, unit: 'kg', minStock: 3, category: 'Dry Fruits' },
+  { id: 'i13', name: 'Cooking Oil', stock: 8, unit: 'ltr', minStock: 5, category: 'Essentials' },
+  { id: 'i14', name: 'Garam Masala', stock: 1, unit: 'kg', minStock: 2, category: 'Spices' },
+  { id: 'i15', name: 'Red Chili Powder', stock: 2, unit: 'kg', minStock: 2, category: 'Spices' },
+  { id: 'i16', name: 'Gram Flour', stock: 4, unit: 'kg', minStock: 3, category: 'Grains' },
 ];
 
 const USERS_DATA: User[] = [
