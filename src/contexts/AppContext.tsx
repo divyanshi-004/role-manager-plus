@@ -1,0 +1,216 @@
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+export type Role = 'admin' | 'manager' | 'staff' | 'customer';
+
+export type OrderStatus = 'placed' | 'preparing' | 'ready' | 'served';
+
+export interface MenuItem {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  description: string;
+  available: boolean;
+  image?: string;
+}
+
+export interface CartItem {
+  item: MenuItem;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  items: CartItem[];
+  total: number;
+  status: OrderStatus;
+  tableNumber: number;
+  createdAt: Date;
+  customerName?: string;
+}
+
+export interface InventoryItem {
+  id: string;
+  name: string;
+  stock: number;
+  unit: string;
+  minStock: number;
+  category: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  active: boolean;
+}
+
+interface AppContextType {
+  role: Role;
+  setRole: (role: Role) => void;
+  isDark: boolean;
+  toggleTheme: () => void;
+  menu: MenuItem[];
+  setMenu: React.Dispatch<React.SetStateAction<MenuItem[]>>;
+  cart: CartItem[];
+  addToCart: (item: MenuItem) => void;
+  removeFromCart: (itemId: string) => void;
+  updateCartQuantity: (itemId: string, qty: number) => void;
+  clearCart: () => void;
+  orders: Order[];
+  placeOrder: (tableNumber: number, customerName?: string) => void;
+  advanceOrderStatus: (orderId: string) => void;
+  inventory: InventoryItem[];
+  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+  restockItem: (itemId: string, amount: number) => void;
+  users: User[];
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+}
+
+const AppContext = createContext<AppContextType | null>(null);
+
+export const useApp = () => {
+  const ctx = useContext(AppContext);
+  if (!ctx) throw new Error('useApp must be inside AppProvider');
+  return ctx;
+};
+
+const MENU_DATA: MenuItem[] = [
+  // Starters
+  { id: 's1', name: 'Paneer Tikka', price: 249, category: 'Starters', description: 'Smoky cottage cheese cubes marinated in spices', available: true },
+  { id: 's2', name: 'Chicken 65', price: 289, category: 'Starters', description: 'Spicy deep-fried chicken bites', available: true },
+  { id: 's3', name: 'Veg Spring Rolls', price: 199, category: 'Starters', description: 'Crispy rolls stuffed with vegetables', available: true },
+  { id: 's4', name: 'Fish Amritsari', price: 349, category: 'Starters', description: 'Beer-battered fish with chaat masala', available: true },
+  // Main Course
+  { id: 'm1', name: 'Butter Chicken', price: 349, category: 'Main Course', description: 'Creamy tomato-based chicken curry', available: true },
+  { id: 'm2', name: 'Dal Makhani', price: 249, category: 'Main Course', description: 'Slow-cooked black lentils in butter', available: true },
+  { id: 'm3', name: 'Mutton Rogan Josh', price: 449, category: 'Main Course', description: 'Kashmiri-style tender mutton curry', available: true },
+  { id: 'm4', name: 'Palak Paneer', price: 269, category: 'Main Course', description: 'Spinach curry with cottage cheese', available: true },
+  { id: 'm5', name: 'Chole Bhature', price: 199, category: 'Main Course', description: 'Spiced chickpeas with fried bread', available: true },
+  // Breads
+  { id: 'b1', name: 'Butter Naan', price: 59, category: 'Breads', description: 'Soft leavened bread with butter', available: true },
+  { id: 'b2', name: 'Garlic Naan', price: 79, category: 'Breads', description: 'Naan topped with garlic & coriander', available: true },
+  { id: 'b3', name: 'Tandoori Roti', price: 39, category: 'Breads', description: 'Whole wheat bread from tandoor', available: true },
+  { id: 'b4', name: 'Laccha Paratha', price: 69, category: 'Breads', description: 'Layered flaky flatbread', available: true },
+  // Rice
+  { id: 'r1', name: 'Chicken Biryani', price: 329, category: 'Rice', description: 'Fragrant basmati rice with chicken', available: true },
+  { id: 'r2', name: 'Veg Pulao', price: 199, category: 'Rice', description: 'Aromatic rice with mixed vegetables', available: true },
+  { id: 'r3', name: 'Jeera Rice', price: 149, category: 'Rice', description: 'Cumin-tempered basmati rice', available: true },
+  // Beverages
+  { id: 'bv1', name: 'Masala Chai', price: 49, category: 'Beverages', description: 'Spiced Indian tea', available: true },
+  { id: 'bv2', name: 'Mango Lassi', price: 99, category: 'Beverages', description: 'Sweet yogurt mango smoothie', available: true },
+  { id: 'bv3', name: 'Fresh Lime Soda', price: 79, category: 'Beverages', description: 'Refreshing lime with soda', available: true },
+  { id: 'bv4', name: 'Cold Coffee', price: 129, category: 'Beverages', description: 'Iced coffee with cream', available: true },
+  // Desserts
+  { id: 'd1', name: 'Gulab Jamun', price: 99, category: 'Desserts', description: 'Deep-fried milk dumplings in syrup', available: true },
+  { id: 'd2', name: 'Rasmalai', price: 129, category: 'Desserts', description: 'Soft paneer discs in saffron milk', available: true },
+  { id: 'd3', name: 'Kulfi', price: 89, category: 'Desserts', description: 'Traditional Indian ice cream', available: true },
+];
+
+const INVENTORY_DATA: InventoryItem[] = [
+  { id: 'i1', name: 'Chicken', stock: 8, unit: 'kg', minStock: 5, category: 'Protein' },
+  { id: 'i2', name: 'Paneer', stock: 3, unit: 'kg', minStock: 4, category: 'Protein' },
+  { id: 'i3', name: 'Mutton', stock: 2, unit: 'kg', minStock: 3, category: 'Protein' },
+  { id: 'i4', name: 'Basmati Rice', stock: 15, unit: 'kg', minStock: 10, category: 'Grains' },
+  { id: 'i5', name: 'Wheat Flour', stock: 12, unit: 'kg', minStock: 8, category: 'Grains' },
+  { id: 'i6', name: 'Tomatoes', stock: 4, unit: 'kg', minStock: 5, category: 'Vegetables' },
+  { id: 'i7', name: 'Onions', stock: 6, unit: 'kg', minStock: 8, category: 'Vegetables' },
+  { id: 'i8', name: 'Spinach', stock: 1, unit: 'kg', minStock: 3, category: 'Vegetables' },
+  { id: 'i9', name: 'Cream', stock: 3, unit: 'ltr', minStock: 4, category: 'Dairy' },
+  { id: 'i10', name: 'Butter', stock: 2, unit: 'kg', minStock: 3, category: 'Dairy' },
+  { id: 'i11', name: 'Yogurt', stock: 5, unit: 'ltr', minStock: 4, category: 'Dairy' },
+  { id: 'i12', name: 'Cooking Oil', stock: 8, unit: 'ltr', minStock: 5, category: 'Essentials' },
+  { id: 'i13', name: 'Garam Masala', stock: 1, unit: 'kg', minStock: 2, category: 'Spices' },
+  { id: 'i14', name: 'Red Chili Powder', stock: 2, unit: 'kg', minStock: 2, category: 'Spices' },
+  { id: 'i15', name: 'Fish', stock: 2, unit: 'kg', minStock: 3, category: 'Protein' },
+];
+
+const USERS_DATA: User[] = [
+  { id: 'u1', name: 'Arjun Sharma', email: 'arjun@restaurant.com', role: 'admin', active: true },
+  { id: 'u2', name: 'Priya Patel', email: 'priya@restaurant.com', role: 'manager', active: true },
+  { id: 'u3', name: 'Ravi Kumar', email: 'ravi@restaurant.com', role: 'staff', active: true },
+  { id: 'u4', name: 'Sneha Gupta', email: 'sneha@restaurant.com', role: 'staff', active: true },
+  { id: 'u5', name: 'Amit Singh', email: 'amit@restaurant.com', role: 'customer', active: true },
+];
+
+const SAMPLE_ORDERS: Order[] = [
+  { id: 'ORD-001', items: [{ item: MENU_DATA[4], quantity: 2 }, { item: MENU_DATA[9], quantity: 4 }], total: 934, status: 'preparing', tableNumber: 3, createdAt: new Date(Date.now() - 1200000) },
+  { id: 'ORD-002', items: [{ item: MENU_DATA[0], quantity: 1 }, { item: MENU_DATA[13], quantity: 1 }], total: 578, status: 'placed', tableNumber: 7, createdAt: new Date(Date.now() - 600000) },
+  { id: 'ORD-003', items: [{ item: MENU_DATA[6], quantity: 1 }, { item: MENU_DATA[15], quantity: 2 }], total: 747, status: 'ready', tableNumber: 1, createdAt: new Date(Date.now() - 1800000) },
+  { id: 'ORD-004', items: [{ item: MENU_DATA[1], quantity: 2 }, { item: MENU_DATA[17], quantity: 2 }], total: 676, status: 'placed', tableNumber: 5, createdAt: new Date(Date.now() - 300000) },
+];
+
+export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const [role, setRole] = useState<Role>('admin');
+  const [isDark, setIsDark] = useState(false);
+  const [menu, setMenu] = useState<MenuItem[]>(MENU_DATA);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [orders, setOrders] = useState<Order[]>(SAMPLE_ORDERS);
+  const [inventory, setInventory] = useState<InventoryItem[]>(INVENTORY_DATA);
+  const [users, setUsers] = useState<User[]>(USERS_DATA);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark);
+  }, [isDark]);
+
+  const toggleTheme = () => setIsDark(p => !p);
+
+  const addToCart = (item: MenuItem) => {
+    setCart(prev => {
+      const existing = prev.find(c => c.item.id === item.id);
+      if (existing) return prev.map(c => c.item.id === item.id ? { ...c, quantity: c.quantity + 1 } : c);
+      return [...prev, { item, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (itemId: string) => setCart(prev => prev.filter(c => c.item.id !== itemId));
+
+  const updateCartQuantity = (itemId: string, qty: number) => {
+    if (qty <= 0) return removeFromCart(itemId);
+    setCart(prev => prev.map(c => c.item.id === itemId ? { ...c, quantity: qty } : c));
+  };
+
+  const clearCart = () => setCart([]);
+
+  const placeOrder = (tableNumber: number, customerName?: string) => {
+    if (cart.length === 0) return;
+    const newOrder: Order = {
+      id: `ORD-${String(orders.length + 1).padStart(3, '0')}`,
+      items: [...cart],
+      total: cart.reduce((sum, c) => sum + c.item.price * c.quantity, 0),
+      status: 'placed',
+      tableNumber,
+      createdAt: new Date(),
+      customerName,
+    };
+    setOrders(prev => [newOrder, ...prev]);
+    clearCart();
+  };
+
+  const advanceOrderStatus = (orderId: string) => {
+    const flow: OrderStatus[] = ['placed', 'preparing', 'ready', 'served'];
+    setOrders(prev => prev.map(o => {
+      if (o.id !== orderId) return o;
+      const idx = flow.indexOf(o.status);
+      if (idx < flow.length - 1) return { ...o, status: flow[idx + 1] };
+      return o;
+    }));
+  };
+
+  const restockItem = (itemId: string, amount: number) => {
+    setInventory(prev => prev.map(i => i.id === itemId ? { ...i, stock: i.stock + amount } : i));
+  };
+
+  return (
+    <AppContext.Provider value={{
+      role, setRole, isDark, toggleTheme,
+      menu, setMenu, cart, addToCart, removeFromCart, updateCartQuantity, clearCart,
+      orders, placeOrder, advanceOrderStatus,
+      inventory, setInventory, restockItem,
+      users, setUsers,
+    }}>
+      {children}
+    </AppContext.Provider>
+  );
+};
