@@ -20,21 +20,21 @@ const peakHours = [
 ];
 
 const topItems = [
-  { name: 'Butter Chicken', orders: 142 },
-  { name: 'Chicken Biryani', orders: 128 },
+  { name: 'Paneer Butter Masala', orders: 142 },
+  { name: 'Veg Biryani', orders: 128 },
   { name: 'Paneer Tikka', orders: 98 },
   { name: 'Dal Makhani', orders: 87 },
 ];
 
 const leastItems = [
-  { name: 'Veg Pulao', orders: 12 },
+  { name: 'Missi Roti', orders: 12 },
   { name: 'Tandoori Roti', orders: 18 },
   { name: 'Kulfi', orders: 22 },
 ];
 
 const combos = [
-  { combo: 'Butter Chicken + Garlic Naan + Lassi', saves: '₹45' },
-  { combo: 'Biryani + Raita + Cold Coffee', saves: '₹35' },
+  { combo: 'Paneer Butter Masala + Garlic Naan + Lassi', saves: '₹45' },
+  { combo: 'Veg Biryani + Raita + Cold Coffee', saves: '₹35' },
   { combo: 'Paneer Tikka + Dal Makhani + Naan', saves: '₹55' },
 ];
 
