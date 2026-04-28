@@ -18,14 +18,24 @@ export default function CustomerMenuPage() {
   const [tableNumber, setTableNumber] = useState('');
   const navigate = useNavigate();
 
-  const filtered = (activeCategory === 'All' ? menu : menu.filter(i => i.category === activeCategory)).filter(i => i.available);
+  const filtered = (activeCategory === 'All' ? menu : menu.filter(i => i.category === activeCategory)).filter(i => i.availability);
   const cartTotal = cart.reduce((s, c) => s + c.item.price * c.quantity, 0);
   const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     const table = parseInt(tableNumber);
-    if (!table || table < 1) { toast.error('Enter a valid table number'); return; }
-    placeOrder(table);
+    if (!table || table < 1) {
+      toast.error('Enter a valid table number');
+      return;
+    }
+
+    const success = await placeOrder(table);
+
+    if (!success) {
+      toast.error('Order failed. Please try again.');
+      return;
+    }
+
     setShowCart(false);
     setTableNumber('');
     toast.success('Order placed successfully! 🎉');

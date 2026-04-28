@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { UserPlus } from "lucide-react";
+import api from "@/api/api";
 
 const roleBadge: Record<Role, string> = {
   admin: '👑 Admin',
@@ -21,22 +22,47 @@ export default function UsersPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState('');
   const [newEmail, setNewEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [newRole, setNewRole] = useState<Role>('staff');
 
-  const toggleActive = (id: string) => {
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, active: !u.active } : u));
+  const toggleActive = async (id: string) => {
+    try {
+      await api.put(`/users/${id}/toggle`);
+      // Refresh users
+      const res = await api.get("/users");
+      setUsers(res.data.map((u: any) => ({ id: u._id, name: u.name, email: u.email, role: u.role, active: u.active })));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const changeRole = (id: string, role: Role) => {
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, role } : u));
+  const changeRole = async (id: string, role: Role) => {
+    try {
+      await api.put(`/users/${id}/role`, { role });
+      // Refresh users
+      const res = await api.get("/users");
+      setUsers(res.data.map((u: any) => ({ id: u._id, name: u.name, email: u.email, role: u.role, active: u.active })));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const addUser = () => {
-    if (!newName || !newEmail) return;
-    setUsers(prev => [...prev, {
-      id: `u${Date.now()}`, name: newName, email: newEmail, role: newRole, active: true,
-    }]);
-    setNewName(''); setNewEmail(''); setShowAdd(false);
+  const addUser = async () => {
+    if (!newName || !newEmail || !newPassword) return;
+    try {
+      await api.post("/users", {
+        name: newName,
+        email: newEmail,
+        password: newPassword,
+        role: newRole,
+      });
+      // Refresh users
+      const res = await api.get("/users");
+      setUsers(res.data.map((u: any) => ({ id: u._id, name: u.name, email: u.email, role: u.role, active: u.active })));
+      setNewName(''); setNewEmail(''); setNewPassword(''); setShowAdd(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -54,6 +80,7 @@ export default function UsersPage() {
             <CardContent className="p-4 flex flex-col sm:flex-row gap-3">
               <Input placeholder="Name" value={newName} onChange={e => setNewName(e.target.value)} />
               <Input placeholder="Email" value={newEmail} onChange={e => setNewEmail(e.target.value)} />
+              <Input type="password" placeholder="Password" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
               <Select value={newRole} onValueChange={v => setNewRole(v as Role)}>
                 <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
                 <SelectContent>

@@ -6,17 +6,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Clock, ArrowRight } from "lucide-react";
 
 const statusColors: Record<OrderStatus, string> = {
-  placed: 'bg-info text-info-foreground',
+  pending: 'bg-info text-info-foreground',
   preparing: 'bg-warning text-warning-foreground',
-  ready: 'bg-success text-success-foreground',
-  served: 'bg-muted text-muted-foreground',
+  served: 'bg-success text-success-foreground',
+  paid: 'bg-muted text-muted-foreground',
 };
 
 const statusLabels: Record<OrderStatus, string> = {
-  placed: '🆕 Placed',
+  pending: '🆕 Pending',
   preparing: '🔥 Preparing',
-  ready: '✅ Ready',
   served: '🍽️ Served',
+  paid: '💳 Paid',
 };
 
 export default function OrdersPage() {
@@ -41,11 +41,11 @@ export default function OrdersPage() {
                       </div>
                       <div className="text-sm text-muted-foreground space-x-2">
                         {order.items.map((ci, i) => (
-                          <span key={i}>{ci.item.name} ×{ci.quantity}{i < order.items.length - 1 ? ',' : ''}</span>
+                          <span key={i}>{ci.item?.name || 'Unknown Item'} ×{ci.quantity}{i < order.items.length - 1 ? ',' : ''}</span>
                         ))}
                       </div>
                       <div className="flex items-center gap-3 mt-2">
-                        <span className="font-heading font-semibold text-primary">₹{order.total.toLocaleString('en-IN')}</span>
+                        <span className="font-heading font-semibold text-primary">₹{(order.total ?? 0).toLocaleString('en-IN')}</span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           {Math.round((Date.now() - order.createdAt.getTime()) / 60000)}m ago
